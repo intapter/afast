@@ -63,19 +63,6 @@
                 "name": "onClickChangeTheme"
               }
             }
-          },
-          {
-            "name": "Switch",
-            "props": {
-              "text": "console.log()"
-            },
-            "events": {
-              "onClick": {
-                "type": "script",
-                "src": "./demo.js",
-                "values":[]
-              }
-            }
           }
         ]
       }

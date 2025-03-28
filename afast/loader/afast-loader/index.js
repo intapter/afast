@@ -1,6 +1,7 @@
 const { HTML_ELE_TAGS } = require('./html.js')
 const DEFAULT_ROOT_ID = 'root'
 let views = null
+let id = 0
 
 
 const parseValue = (value) => {
@@ -114,15 +115,16 @@ const parseView = (imports, view, afastObject) => {
                 }
                 case "script": {
                     if (!action.src) throw new Error(`Event with script need a src import, check view \`${afastObject.name}\``)
-                    const fnName = `__SCRIPT_FUNC_OF_EVENT_${action.name}`
+                    const fnName = `__SCRIPT_FUNC_OF_EVENT_${key}_${id++}`
                     imports.add(`import ${fnName} from '${action.src}'`)
-                    // TODO write into a lib
-                    view.props[key] = `${fnName}.bind({setVariable: (name, v) => {
+                    // TODO Write into a lib and improve the followed code
+                    // TODO Why don't we use the Proxy Api to do these?
+                    view.props[key] = `${fnName}.bind({${Object.keys(afastObject.variables).join(',')},setVariable: (name, v) => {
                         ${afastObject.variables && Object.keys(afastObject.variables).map((key) => {
-                        return afastObject.variables[key].reactive
-                            ? `if(name === '${key}') set_${key}(v)`
-                            : `if(name === '${key}') ${key} = v`
-                    }).join(";")}
+                            return afastObject.variables[key].reactive
+                                ? `if(name === '${key}') set_${key}(v)`
+                                : `if(name === '${key}') {${key} = this.${key} = v}`
+                        }).join(";")}
                     }})`
                 }
 

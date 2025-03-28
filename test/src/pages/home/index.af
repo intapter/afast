@@ -14,6 +14,11 @@
     "textColor": {
       "type": "string",
       "value": "${theme === 'dark' ? '#fff' : '#555'}"
+    },
+    "num":{
+      "type": "number",
+      "value": 0,
+      "reactive": true
     }
   },
   "view": {
@@ -32,13 +37,58 @@
       },
       {
         "name": "HelloWorld",
-        "events":{
-          "onClickChangeTheme":{
-            "type":"setVariable",
+        "events": {
+          "onClickChangeTheme": {
+            "type": "setVariable",
             "name": "theme",
-            "values": ["${theme === 'dark' ? 'light' : 'dark'}"]
+            "values": [
+              "${theme === 'dark' ? 'light' : 'dark'}"
+            ]
           }
         }
+      },
+      {
+        "name": "div",
+        "props": {
+          "style": {
+            "padding": 10,
+            "display": "flex",
+            "alignItems": "center",
+            "gap": 10
+          }
+        },
+        "children": [
+          {
+            "name": "Switch",
+            "props": {
+              "text": "-1"
+            },
+            "events": {
+              "onClick": {
+                "type": "script",
+                "src": "./decrease.js",
+                "values": []
+              }
+            }
+          },
+          {
+            "name":"a",
+            "text":"${(num+'').padStart(10, '0')}"
+          },
+          {
+            "name": "Switch",
+            "props": {
+              "text": "+1"
+            },
+            "events": {
+              "onClick": {
+                "type": "script",
+                "src": "./increase.js",
+                "values": []
+              }
+            }
+          }
+        ]
       }
     ]
   }
