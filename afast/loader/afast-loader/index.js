@@ -137,10 +137,10 @@ const parseView = (imports, view, afastObject) => {
 const parseIndex = (afastObject, imports, code) => {
     let __name
     if (afastObject.title) code.push(`document.title = '${afastObject.title}'`)
-    if (afastObject.route) {
-        Object.keys(afastObject.route).forEach((routeName, i) => {
+    if (afastObject.routes) {
+        Object.keys(afastObject.routes).forEach((routeName, i) => {
             const name = `_afast_import_${i}`
-            const routeObject = afastObject.route[routeName]
+            const routeObject = afastObject.routes[routeName]
             imports.add(`import ${name} from '${routeObject.src}'`)
             __name = name
         })

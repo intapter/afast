@@ -7,7 +7,7 @@
     "Switch": "@/views/Switch.af"
   },
   "rootId": "app",
-  "route": {
+  "routes": {
     "home": {
       "src": "@/pages/home/index.af"
     }
