@@ -1,0 +1,6 @@
+{
+    "type":"module",
+    "view":{
+        "name":"div"
+    }
+}

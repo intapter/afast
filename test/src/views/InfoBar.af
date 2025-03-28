@@ -1,0 +1,30 @@
+{
+  "type": "module",
+  "variables": {
+    "profile": {
+      "type": "object",
+      "value": {
+        "version": "1.0.0",
+        "description": "Afast is a simple web framework for quickly building your web applications."
+      }
+    }
+  },
+  "view": {
+    "name": "div",
+    "props": {
+      "style": {
+        "padding": 10
+      }
+    },
+    "children": [
+      {
+        "name": "div",
+        "text": "version: ${profile.version}"
+      },
+      {
+        "name": "div",
+        "text": "${profile.description}"
+      }
+    ]
+  }
+}

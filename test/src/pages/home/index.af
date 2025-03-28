@@ -1,0 +1,38 @@
+{
+  "type": "module",
+  "script": "./index.js",
+  "variables": {
+    "theme": {
+      "type": "string",
+      "reactive": true,
+      "value": "dark"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "value": "${theme === 'dark' ? '#223' : '#fff'}"
+    },
+    "textColor": {
+      "type": "string",
+      "value": "${theme === 'dark' ? '#fff' : '#555'}"
+    }
+  },
+  "view": {
+    "name": "div",
+    "props": {
+      "style": {
+        "width": "100%",
+        "height": "100%",
+        "background": "${backgroundColor}",
+        "color": "${textColor}"
+      }
+    },
+    "children": [
+      {
+        "name": "InfoBar"
+      },
+      {
+        "name": "HelloWorld"
+      }
+    ]
+  }
+}

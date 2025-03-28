@@ -1,0 +1,14 @@
+{
+    "type": "index",
+    "title": "Hello Afast!",
+    "views":{
+        "HelloWorld":"@/views/HelloWorld.af",
+        "InfoBar":"@/views/InfoBar.af"
+    },
+    "rootId": "app",
+    "route": {
+        "home": {
+            "src": "@/pages/home/index.af"
+        }
+    }
+}
