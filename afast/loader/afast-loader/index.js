@@ -1,5 +1,6 @@
-let views = null
+const { HTML_ELE_TAGS } = require('./html.js')
 const DEFAULT_ROOT_ID = 'root'
+let views = null
 
 
 const parseValue = (value) => {
@@ -8,10 +9,19 @@ const parseValue = (value) => {
     return value
 }
 
-const parseObject = (props) => {
+const renameEvent = (name) => {
+    return `${name}`
+}
+
+
+const parseObject = (props, noParseKeys) => {
     if (!props) return undefined
     return '{' + Object.keys(props).map((key) => {
-        const value = typeof props[key] === 'object' ? parseObject(props[key]) : parseValue(props[key])
+        const value = typeof props[key] === 'object'
+            ? parseObject(props[key])
+            : noParseKeys && noParseKeys.includes(key)
+                ? props[key]    // Do not parse this field with function parseValue
+                : parseValue(props[key])
         return `${key}: ${value}`
     }).join(',') + "}"
 }
@@ -49,10 +59,10 @@ const parseVariables = (variables, code) => {
     })
 }
 
-const parseView = (imports, view) => {
+const parseView = (imports, view, afastObject) => {
     let tag
-    // Parse the first param of React.createElement
-    if (['div', 'h1'].includes(view.name)) {
+    // Parse name of view
+    if (HTML_ELE_TAGS.has(view.name)) {
         // This view is a normal HTML element
         tag = `'${view.name}'`
     } else {
@@ -63,14 +73,51 @@ const parseView = (imports, view) => {
         tag = `_afast_import_view_${view.name}`
         imports.add(`import ${tag} from '${moduleSrc}'`)
     }
-    // Parse the children
+    // Parse children of view
     const children = []
     if (view.children) {
         view.children.forEach((child) => {
-            children.push(parseView(imports, child))
+            children.push(parseView(imports, child, afastObject))
         })
     }
-    return `React.createElement(${tag}, ${parseObject(view.props)}, ${children && children.length > 0 ? children.join() : view.text ? `\`${view.text}\`` : null})`
+    // Parse events of view
+    const noParseKeys = []
+    if (view.events) {
+        if(!view.props) view.props = {}
+        Object.keys(view.events).forEach((key) => {
+            noParseKeys.push(key)
+            const action = view.events[key]
+            const valuesStr = action.values ? action.values.map((value) => {
+                if (value === '$e') return value
+                return parseValue(value)
+            }).join() : ''
+            switch (action.type) {
+                case "dispatch": {
+                    if (!afastObject.events)
+                        throw new Error(`View \`${afastObject.name}\` hasn't any actions`)
+                    if (!afastObject.events[action.name])
+                        throw new Error(`View \`${afastObject.name}\` doesn't have a action named \`${action.name}\`, did you forget to register it?`)
+                    view.props[key] = `(${action.values && action.values.includes('$e') ? '$e' : ''
+                        }) => {${renameEvent(action.name)}(${valuesStr})}`
+                    break
+                }
+                case "setVariable": {
+                    const variable = afastObject.variables[action.name]
+                    if (!variable) throw new Error(`View \`${afastObject.name}\` doesn't have an variable named \`${action.name}\``)
+                    // TODO check weather the type of value is correct
+                    if (variable.reactive) {
+                        view.props[key] = `($e) => set_${action.name}(${valuesStr})`
+                    }else{
+
+                    }
+
+                }
+            }
+
+            console.log('----------dispatch', action.type, view.props);
+        })
+    }
+    return `React.createElement(${tag}, ${parseObject(view.props, noParseKeys)}, ${children && children.length > 0 ? children.join() : view.text ? `\`${view.text}\`` : null})`
 }
 
 const parseIndex = (afastObject, imports, code) => {
@@ -95,13 +142,24 @@ const parseIndex = (afastObject, imports, code) => {
 
 const parseModule = (afastObject, imports, code) => {
     const variables = []
+    const props = []
     parseVariables(afastObject.variables, variables)
     if (afastObject.script) code.push(`import '${afastObject.script}'`)
+    if (afastObject.props) {
+        Object.keys(afastObject.props).forEach((key) => {
+            props.push(key)
+        })
+    }
+    if (afastObject.events) {
+        Object.keys(afastObject.events).forEach((key) => {
+            props.push(renameEvent(key))
+        })
+    }
     if (afastObject.view) {
         imports.add(`import React from 'react'`)
-        code.push(`export default function(){ ${[
+        code.push(`export default function({${props.join()}}){ ${[
             ...variables,
-            `return ${parseView(imports, afastObject.view)}`
+            `return ${parseView(imports, afastObject.view, afastObject)}`
         ].join('\n')}}`)
     }
 }

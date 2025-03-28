@@ -31,7 +31,14 @@
         "name": "InfoBar"
       },
       {
-        "name": "HelloWorld"
+        "name": "HelloWorld",
+        "events":{
+          "onClickChangeTheme":{
+            "type":"setVariable",
+            "name": "theme",
+            "values": ["${theme === 'dark' ? 'light' : 'dark'}"]
+          }
+        }
       }
     ]
   }

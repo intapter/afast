@@ -11,11 +11,14 @@
       "value": "world"
     }
   },
+  "events":{
+    "onClickChangeTheme":{
+    }
+  },
   "view": {
     "name": "div",
     "props": {
       "style": {
-        "display": "flex",
         "padding": "10px"
       }
     },
@@ -23,6 +26,45 @@
       {
         "name": "h1",
         "text": "${hello} ${name}!"
+      },
+      {
+        "name": "div",
+        "props": {
+          "style": {
+            "display": "flex",
+            "alignItems": "center",
+            "gap": 10
+          }
+        },
+        "children": [
+          {
+            "name": "Switch",
+            "props": {
+              "text": "Change Word"
+            },
+            "events": {
+              "onClick": {
+                "type": "setVariable",
+                "name": "name",
+                "values": [
+                  "${name === 'Afast' ? 'World' : 'Afast'}"
+                ]
+              }
+            }
+          },
+          {
+            "name": "Switch",
+            "props": {
+              "text": "Change Theme"
+            },
+            "events": {
+              "onClick": {
+                "type": "dispatch",
+                "name": "onClickChangeTheme"
+              }
+            }
+          }
+        ]
       }
     ]
   }

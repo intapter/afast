@@ -1,0 +1,57 @@
+{
+  "type": "module",
+  "props": {
+    "text": {
+      "type": "string"
+    }
+  },
+  "events": {
+    "onClick": {
+      "params": [
+        {
+          "name": "event",
+          "type": "Event"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "type": "number"
+        }
+      ]
+    }
+  },
+  "view": {
+    "name": "div",
+    "props": {
+      "style": {
+        "borderRadius": 5,
+        "height": 30,
+        "minWidth": 40,
+        "width": "fit-content",
+        "background": "#00b2ff",
+        "color": "#fff",
+        "padding": "0 10px",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "cursor": "pointer",
+        "userSelect":"none"
+      }
+    },
+    "events": {
+      "onClick": {
+        "type": "dispatch",
+        "name": "onClick",
+        "values": [
+          "$e",
+          "XiaoMin",
+          18
+        ]
+      }
+    },
+    "text": "${text}"
+  }
+}
