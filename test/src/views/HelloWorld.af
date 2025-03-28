@@ -11,9 +11,8 @@
       "value": "world"
     }
   },
-  "events":{
-    "onClickChangeTheme":{
-    }
+  "events": {
+    "onClickChangeTheme": {}
   },
   "view": {
     "name": "div",
@@ -24,7 +23,7 @@
     },
     "children": [
       {
-        "name": "h1",
+        "name": "div",
         "text": "${hello} ${name}!"
       },
       {
@@ -33,6 +32,7 @@
           "style": {
             "display": "flex",
             "alignItems": "center",
+            "marginTop": 10,
             "gap": 10
           }
         },
@@ -61,6 +61,19 @@
               "onClick": {
                 "type": "dispatch",
                 "name": "onClickChangeTheme"
+              }
+            }
+          },
+          {
+            "name": "Switch",
+            "props": {
+              "text": "console.log()"
+            },
+            "events": {
+              "onClick": {
+                "type": "script",
+                "src": "./demo.js",
+                "values":[]
               }
             }
           }

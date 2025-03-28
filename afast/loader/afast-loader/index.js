@@ -83,7 +83,7 @@ const parseView = (imports, view, afastObject) => {
     // Parse events of view
     const noParseKeys = []
     if (view.events) {
-        if(!view.props) view.props = {}
+        if (!view.props) view.props = {}
         Object.keys(view.events).forEach((key) => {
             noParseKeys.push(key)
             const action = view.events[key]
@@ -107,14 +107,26 @@ const parseView = (imports, view, afastObject) => {
                     // TODO check weather the type of value is correct
                     if (variable.reactive) {
                         view.props[key] = `($e) => set_${action.name}(${valuesStr})`
-                    }else{
-
+                    } else {
+                        view.props[key] = `() => {${action.name} = ${parseValue(action.value)}}`
                     }
-
+                    break
                 }
-            }
+                case "script": {
+                    if (!action.src) throw new Error(`Event with script need a src import, check view \`${afastObject.name}\``)
+                    const fnName = `__SCRIPT_FUNC_OF_EVENT_${action.name}`
+                    imports.add(`import ${fnName} from '${action.src}'`)
+                    // TODO write into a lib
+                    view.props[key] = `${fnName}.bind({setVariable: (name, v) => {
+                        ${afastObject.variables && Object.keys(afastObject.variables).map((key) => {
+                        return afastObject.variables[key].reactive
+                            ? `if(name === '${key}') set_${key}(v)`
+                            : `if(name === '${key}') ${key} = v`
+                    }).join(";")}
+                    }})`
+                }
 
-            console.log('----------dispatch', action.type, view.props);
+            }
         })
     }
     return `React.createElement(${tag}, ${parseObject(view.props, noParseKeys)}, ${children && children.length > 0 ? children.join() : view.text ? `\`${view.text}\`` : null})`

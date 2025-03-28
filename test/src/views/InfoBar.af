@@ -5,7 +5,7 @@
       "type": "object",
       "value": {
         "version": "1.0.0",
-        "description": "Afast is a simple web framework for quickly building your web applications."
+        "description": "Afast is a simple web framework for quickly building your web applications.These is a demo project."
       }
     }
   },
@@ -18,12 +18,16 @@
     },
     "children": [
       {
-        "name": "div",
-        "text": "version: ${profile.version}"
+        "name": "h1",
+        "text": "Welcome to use Afast"
       },
       {
         "name": "div",
         "text": "${profile.description}"
+      },
+      {
+        "name": "div",
+        "text": "version: ${profile.version}"
       }
     ]
   }
