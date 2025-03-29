@@ -1,7 +1,7 @@
 const { HTML_ELE_TAGS } = require("./html.js");
 const DEFAULT_ROOT_ID = "root";
-const DEFAULT_FOR_ITEM_NAME = "item"
-const DEFAULT_FOR_KEY_NAME = "key"
+const DEFAULT_FOR_ITEM_NAME = "item";
+const DEFAULT_FOR_KEY_NAME = "key";
 let views = null;
 let id = 0;
 
@@ -188,7 +188,7 @@ const parseView = (imports, view, afastObject) => {
     });
   }
 
-  const geneareRes = () => {
+  const geneareElementCode = () => {
     return `React.createElement(${tag}, ${parseObject(
       view.props,
       noParseKeys
@@ -202,17 +202,28 @@ const parseView = (imports, view, afastObject) => {
   };
 
   // Parse `for` of view
-  if (view.for && typeof view === "object") {
-    if (!view.for.array)
-      throw new Error(
-        "Field `array` is required when you set a for-command for this view"
-      );
-    // TODO check weather the field is exist
-    return `${view.for.array}.map((${view.for.item || DEFAULT_FOR_ITEM_NAME},${view.for.key || DEFAULT_FOR_KEY_NAME}) => ${geneareRes()})`
-  }
-  // Or return a normal view
-  else{
-    return geneareRes();
+  const generateForOrnormal = () => {
+    if (view.for && typeof view === "object") {
+      if (!view.for.array)
+        throw new Error(
+          "Field `array` is required when you set a for-command for this view"
+        );
+      // TODO check weather the field is exist
+      return `${view.for.array}.map((${
+        view.for.item || DEFAULT_FOR_ITEM_NAME
+      },${view.for.key || DEFAULT_FOR_KEY_NAME}) => ${geneareElementCode()})`;
+    }
+    // Or return a normal view
+    else {
+      return geneareElementCode();
+    }
+  };
+
+  // Parse `if` of view
+  if(view.if){
+    return `${view.if} ? ${generateForOrnormal()} : null`
+  }else{
+    return generateForOrnormal()
   }
 };
 
