@@ -1,21 +1,23 @@
 {
   "type": "module",
-  "script": "./index.js",
+  "imports": [
+    {
+      "src": "./index.module.scss",
+      "modules": [
+        {
+          "name": "default",
+          "alias":"styles"
+        }
+      ]
+    }
+  ],
   "variables": {
     "theme": {
       "type": "string",
       "reactive": true,
       "value": "dark"
     },
-    "backgroundColor": {
-      "type": "string",
-      "value": "${theme === 'dark' ? '#223' : '#fff'}"
-    },
-    "textColor": {
-      "type": "string",
-      "value": "${theme === 'dark' ? '#fff' : '#555'}"
-    },
-    "num":{
+    "num": {
       "type": "number",
       "value": 0,
       "reactive": true
@@ -24,12 +26,7 @@
   "view": {
     "name": "div",
     "props": {
-      "style": {
-        "width": "100%",
-        "height": "100%",
-        "background": "${backgroundColor}",
-        "color": "${textColor}"
-      }
+      "className": "${styles.home} ${styles[theme]}"
     },
     "children": [
       {
@@ -66,14 +63,14 @@
             "events": {
               "onClick": {
                 "type": "script",
-                "src": "./decrease.js",
+                "code": "console.log(styles)",
                 "values": []
               }
             }
           },
           {
-            "name":"a",
-            "text":"${(num+'').padStart(10, '0')}"
+            "name": "a",
+            "text": "${(num+'').padStart(10, '0')}"
           },
           {
             "name": "Switch",
@@ -82,7 +79,7 @@
             },
             "events": {
               "onClick": {
-                "type": "script",
+                "type": "handler",
                 "src": "./increase.js",
                 "values": []
               }

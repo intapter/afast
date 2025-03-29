@@ -1,0 +1,12 @@
+.home{
+  width: 100%;
+  height: 100%;
+  &.dark{
+    background: #223;
+    color: white;
+  }
+  &.light{
+    background: white;
+    color: #555;
+  }
+}
