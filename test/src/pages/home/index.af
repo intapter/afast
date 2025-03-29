@@ -6,7 +6,7 @@
       "modules": [
         {
           "name": "default",
-          "alias":"styles"
+          "alias": "styles"
         }
       ]
     }
@@ -21,12 +21,29 @@
       "type": "number",
       "value": 0,
       "reactive": true
+    },
+    "userList": {
+      "type": "array",
+      "value": [
+        {
+          "id": "1",
+          "name": "小明"
+        },
+        {
+          "id": "2",
+          "name": "小红"
+        },
+        {
+          "id": "3",
+          "name": "小刚"
+        }
+      ]
     }
   },
   "view": {
     "name": "div",
     "props": {
-      "className": "${styles.home} ${styles[theme]}"
+      "className": "${styles.home}${styles[theme]}"
     },
     "children": [
       {
@@ -39,7 +56,7 @@
             "type": "setVariable",
             "name": "theme",
             "values": [
-              "${theme === 'dark' ? 'light' : 'dark'}"
+              "${theme==='dark'?'light':'dark'}"
             ]
           }
         }
@@ -70,7 +87,7 @@
           },
           {
             "name": "a",
-            "text": "${(num+'').padStart(10, '0')}"
+            "text": "${(num+'').padStart(10,'0')}"
           },
           {
             "name": "Switch",
@@ -83,6 +100,23 @@
                 "src": "./increase.js",
                 "values": []
               }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ul",
+        "children": [
+          {
+            "name": "li",
+            "text": "${user.name}",
+            "props": {
+              "key": "${key}"
+            },
+            "for": {
+              "array": "userList",
+              "item": "user",
+              "key": "key"
             }
           }
         ]
