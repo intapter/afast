@@ -74,7 +74,7 @@ AF 文件是 Afast 用来存储视图的文件，采用 JSON 格式。下面来�
   ```
   {
     ...,
-    "variables": {
+    "fields": {
       "userName": {
         "type": "string",
         "reactive": true,

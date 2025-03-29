@@ -46,34 +46,38 @@ const parseObject = (props, noParseKeys) => {
   );
 };
 
-const parseVariables = (variables, code) => {
-  if (!variables) return;
-  Object.keys(variables).forEach((key) => {
+const parseField = (fields, code) => {
+  if (!fields) return;
+  Object.keys(fields).forEach((key) => {
     const name = `${key}`;
-    const variable = variables[key];
+    const field = fields[key];
     let value;
-    switch (variable.type) {
+    switch (field.type) {
       case "string": {
-        value = parseValue(variable.value);
+        value = parseValue(field.value);
         break;
       }
       case "boolean":
       case "number": {
-        value = variable.value;
+        value = field.value;
         break;
       }
       case "object": {
-        value = parseObject(variable.value);
+        value = parseObject(field.value);
         break;
       }
       case "array": {
-        value = parseValue(variable.value);
+        value = parseValue(field.value);
         break;
+      }
+      case "ref":{
+        value = "React.useRef()"
+        break
       }
       default:
         "";
     }
-    if (variable.reactive)
+    if (field.reactive && field.type !== 'ref')
       code.push(`const [${name},set_${name}] = React.useState(${value})`);
     else code.push(`let ${name} = ${value}`);
   });
@@ -109,7 +113,7 @@ const parseView = (imports, view, afastObject) => {
     });
   }
   // Parse events of view
-  const noParseKeys = [];
+  const noParseKeys = ["ref"];
   if (view.events) {
     if (!view.props) view.props = {};
     Object.keys(view.events).forEach((key) => {
@@ -136,14 +140,14 @@ const parseView = (imports, view, afastObject) => {
           }) => {${renameEvent(action.name)}(${valuesStr})}`;
           break;
         }
-        case "setVariable": {
-          const variable = afastObject.variables[action.name];
-          if (!variable)
+        case "setField": {
+          const field = afastObject.fields[action.name];
+          if (!field)
             throw new Error(
-              `View \`${afastObject.name}\` doesn't have an variable named \`${action.name}\``
+              `View \`${afastObject.name}\` doesn't have an field named \`${action.name}\``
             );
           // TODO check weather the type of value is correct
-          if (variable.reactive) {
+          if (field.reactive) {
             view.props[key] = `($e) => set_${action.name}(${valuesStr})`;
           } else {
             view.props[key] = `() => {${action.name} = ${parseValue(
@@ -170,13 +174,13 @@ const parseView = (imports, view, afastObject) => {
           // TODO Write into a lib and improve the followed code
           // TODO Why don't we use the Proxy Api to do these?
           view.props[key] = `${fnName}.bind({${Object.keys(
-            afastObject.variables
-          ).join(",")},setVariable: (name, v) => {
+            afastObject.fields
+          ).join(",")},setField: (name, v) => {
                         ${
-                          afastObject.variables &&
-                          Object.keys(afastObject.variables)
+                          afastObject.fields &&
+                          Object.keys(afastObject.fields)
                             .map((key) => {
-                              return afastObject.variables[key].reactive
+                              return afastObject.fields[key].reactive
                                 ? `if(name === '${key}') set_${key}(v)`
                                 : `if(name === '${key}') {${key} = this.${key} = v}`;
                             })
@@ -186,6 +190,12 @@ const parseView = (imports, view, afastObject) => {
         }
       }
     });
+  }
+
+  // Parse ref of view
+  if(view.props) view.props.ref = undefined
+  if(view.ref){
+    view.props.ref = view.ref
   }
 
   const geneareElementCode = () => {
@@ -283,9 +293,9 @@ const parseImports = (afastObject, importsConfig, imports) => {
 };
 
 const parseModule = (afastObject, imports, code) => {
-  const variables = [];
+  const fields = [];
   const props = [];
-  parseVariables(afastObject.variables, variables);
+  parseField(afastObject.fields, fields);
   if (afastObject.imports) {
     parseImports(afastObject, afastObject.imports, imports);
   }
@@ -303,7 +313,7 @@ const parseModule = (afastObject, imports, code) => {
     imports.add(`import React from 'react'`);
     code.push(
       `export default function({${props.join()}}){ ${[
-        ...variables,
+        ...fields,
         `return ${parseView(imports, afastObject.view, afastObject)}`,
       ].join("\n")}}`
     );

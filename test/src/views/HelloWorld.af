@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "variables": {
+  "fields": {
     "hello": {
       "type": "string",
       "value": "Hello"

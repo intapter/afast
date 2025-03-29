@@ -1,3 +1,3 @@
 module.exports = function(){
-    this.setVariable('num', this.num+1)
+    this.setField('num', this.num+1)
 }

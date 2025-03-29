@@ -11,7 +11,11 @@
       ]
     }
   ],
-  "variables": {
+  "fields": {
+    "myRef":{
+      "type":"ref",
+      "ref": true
+    },
     "theme": {
       "type": "string",
       "reactive": true,
@@ -110,6 +114,7 @@
           {
             "name": "li",
             "text": "${user.name}",
+            "ref":"myRef",
             "props": {
               "key": "${key}"
             },
@@ -119,7 +124,13 @@
               "key": "key"
             }
           }
-        ]
+        ],
+        "events":{
+          "onClick":{
+            "type":"script",
+            "code":"myRef.current.style.color = 'red'"
+          } 
+        }
       },
       {
         "name": "div",

@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "variables": {
+  "fields": {
     "profile": {
       "type": "object",
       "value": {
