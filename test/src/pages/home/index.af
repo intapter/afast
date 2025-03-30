@@ -11,6 +11,12 @@
       ]
     }
   ],
+  "onMounted":[
+    "./onMounted.js"
+  ],
+  "onUpdated":[
+    "./"
+  ],
   "fields": {
     "myRef":{
       "type":"ref",

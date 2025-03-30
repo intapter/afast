@@ -5,6 +5,24 @@ const DEFAULT_FOR_KEY_NAME = "key";
 let views = null;
 let id = 0;
 
+const parseOnMounted = (onMounted, imports, code) => {
+  const name = `__HANDLER_FUNC_OF_EVENT_onMounted_${id}`;
+  imports.add(`import ${name} from '${onMounted}'`);
+  code.push(`React.useEffect(${name}.bind({}),[])`);
+};
+
+const parseLifeEvents = (afastObject, imports, code) => {
+  if (afastObject.onMounted) {
+    if (typeof afastObject.onMounted === "string")
+      parseOnMounted(afastObject.onMounted, imports, code);
+    else if (Array.isArray(afastObject.onMounted)) {
+      afastObject.onMounted.forEach((m) => {
+        parseOnMounted(m, imports, code);
+      });
+    }
+  }
+};
+
 const parseValue = (value) => {
   if (typeof value === "string") return "`" + value.replace(/`/g, "\\`") + "`";
   if (Array.isArray(value))
@@ -70,14 +88,14 @@ const parseField = (fields, code) => {
         value = parseValue(field.value);
         break;
       }
-      case "ref":{
-        value = "React.useRef()"
-        break
+      case "ref": {
+        value = "React.useRef()";
+        break;
       }
       default:
         "";
     }
-    if (field.reactive && field.type !== 'ref')
+    if (field.reactive && field.type !== "ref")
       code.push(`const [${name},set_${name}] = React.useState(${value})`);
     else code.push(`let ${name} = ${value}`);
   });
@@ -193,9 +211,9 @@ const parseView = (imports, view, afastObject) => {
   }
 
   // Parse ref of view
-  if(view.props) view.props.ref = undefined
-  if(view.ref){
-    view.props.ref = view.ref
+  if (view.props) view.props.ref = undefined;
+  if (view.ref) {
+    view.props.ref = view.ref;
   }
 
   const geneareElementCode = () => {
@@ -230,10 +248,10 @@ const parseView = (imports, view, afastObject) => {
   };
 
   // Parse `if` of view
-  if(view.if){
-    return `${view.if} ? ${generateForOrnormal()} : null`
-  }else{
-    return generateForOrnormal()
+  if (view.if) {
+    return `${view.if} ? ${generateForOrnormal()} : null`;
+  } else {
+    return generateForOrnormal();
   }
 };
 
@@ -309,11 +327,16 @@ const parseModule = (afastObject, imports, code) => {
       props.push(renameEvent(key));
     });
   }
+
+  const innerCode = []
+  parseLifeEvents(afastObject, imports, innerCode);
+
   if (afastObject.view) {
     imports.add(`import React from 'react'`);
     code.push(
       `export default function({${props.join()}}){ ${[
         ...fields,
+        ...innerCode,
         `return ${parseView(imports, afastObject.view, afastObject)}`,
       ].join("\n")}}`
     );
