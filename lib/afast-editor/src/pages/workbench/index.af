@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "name": "workbench",
+  "view": {
+    "name": "div",
+    "text": "workbench"
+  }
+}

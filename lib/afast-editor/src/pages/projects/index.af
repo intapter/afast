@@ -1,0 +1,43 @@
+{
+  "type": "module",
+  "name": "projects",
+  "imports": [
+    {
+      "src": "./index.module.scss",
+      "alias": "styles"
+    }
+  ],
+  "fields":{
+    "projects":{
+      "type":"array",
+      "reactive":true,
+      "value":[]
+    }
+  },
+  "controllers":[
+    "./controller/ProjectsController.js"
+  ],
+  "view": {
+    "name": "div",
+    "children": [
+      {
+        "name": "div",
+        "children": [
+          {
+            "name": "ProjectList",
+            "props":{
+              "data":"{{projects}}"
+            },
+            "events":{
+              "onProjectClick":{
+                "type":"hook",
+                "name":"onProjectClick",
+                "values":["a"]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "type": "module",
+  "name": "ProjectList",
+  "imports": [
+    {
+      "src": "./index.module.less",
+      "modules": [
+        {
+          "name": "default",
+          "alias": "styles"
+        }
+      ]
+    }
+  ],
+  "props": {
+    "data": {
+      "type": "array"
+    }
+  },
+  "events":{
+    "onProjectClick":{
+      "values":[]
+    }
+  },
+  "view": {
+    "name": "div",
+    "props": {
+      "className": "${styles.projectList}"
+    },
+    "children": [
+      {
+        "name": "div",
+        "props": {
+        "className": "${styles.projectItem}",
+          "key": "${item.id}"
+        },
+        "for": {
+          "array": "data"
+        },
+        "events":{
+          "onClick":{
+            "type":"dispatch",
+            "name":"onProjectClick",
+            "values":["{{item}"]
+          }
+        },
+        "children": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "a",
+            "text": "${item.name}"
+          }
+        ]
+      }
+    ]
+  }
+}
