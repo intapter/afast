@@ -11,15 +11,13 @@
       ]
     }
   ],
-  "onMounted":[
-    "./onMounted.js"
-  ],
-  "onUpdated":[
-    "./"
+  "controllers": [
+    "./controller/a.js",
+    "./controller/b.js"
   ],
   "fields": {
-    "myRef":{
-      "type":"ref",
+    "myRef": {
+      "type": "ref",
       "ref": true
     },
     "theme": {
@@ -53,7 +51,7 @@
   "view": {
     "name": "div",
     "props": {
-      "className": "${styles.home}${styles[theme]}"
+      "className": "${styles.home} ${styles[theme]}"
     },
     "children": [
       {
@@ -63,7 +61,7 @@
         "name": "HelloWorld",
         "events": {
           "onClickChangeTheme": {
-            "type": "setVariable",
+            "type": "setField",
             "name": "theme",
             "values": [
               "${theme==='dark'?'light':'dark'}"
@@ -89,8 +87,8 @@
             },
             "events": {
               "onClick": {
-                "type": "script",
-                "code": "console.log(styles)",
+                "type": "hook",
+                "name": "onDecrease",
                 "values": []
               }
             }
@@ -106,8 +104,8 @@
             },
             "events": {
               "onClick": {
-                "type": "handler",
-                "src": "./increase.js",
+                "type": "hook",
+                "name": "onIncrease",
                 "values": []
               }
             }
@@ -120,7 +118,7 @@
           {
             "name": "li",
             "text": "${user.name}",
-            "ref":"myRef",
+            "ref": "myRef",
             "props": {
               "key": "${key}"
             },
@@ -128,15 +126,19 @@
               "array": "userList",
               "item": "user",
               "key": "key"
+            },
+            "events": {
+              "onClick": {
+                "type": "hook",
+                "name": "onClickTest",
+                "values": [
+                  "${user.name}",
+                  "${user.id}"
+                ]
+              }
             }
           }
-        ],
-        "events":{
-          "onClick":{
-            "type":"script",
-            "code":"myRef.current.style.color = 'red'"
-          } 
-        }
+        ]
       },
       {
         "name": "div",

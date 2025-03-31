@@ -44,7 +44,7 @@
             },
             "events": {
               "onClick": {
-                "type": "setVariable",
+                "type": "setField",
                 "name": "name",
                 "values": [
                   "${name === 'Afast' ? 'World' : 'Afast'}"
