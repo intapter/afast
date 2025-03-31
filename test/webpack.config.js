@@ -7,13 +7,21 @@ module.exports = {
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
-      'afast-boot': path.resolve(__dirname,'../lib/afast-boot')
+      'afast-boot': path.resolve(__dirname, '../lib/afast-boot')
     },
   },
   devtool: "source-map",
   devServer: {
     static: "dist",
     port: 6644,
+    historyApiFallback: {
+      rewrites: [
+        {
+          from: /.+/,
+          to: '/'
+        },
+      ]
+    }
   },
   module: {
     rules: [

@@ -9,6 +9,7 @@
   "rootId": "app",
   "routes": {
     "home": {
+      "path":"/home",
       "src": "@/pages/home/index.af"
     }
   }
