@@ -7,7 +7,7 @@ module.exports = {
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
-      'afast-boot': path.resolve(__dirname, '../lib/afast-boot')
+      'afast-boot': path.resolve(__dirname, '../packages/afast-boot')
     },
   },
   devtool: "source-map",
@@ -26,7 +26,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.jsx$/,
+        exclude: /node_modules/,
+        use: ['babel-loader']
+      },
+      {
         test: /\.scss$/,
+        exclude: /node_modules/,
         use: [
           "style-loader",
           {
@@ -47,7 +53,7 @@ module.exports = {
       },
       {
         test: /\.af$/,
-        use: "../lib/afast-loader-react",
+        use: "../packages/afast-loader-react",
       },
     ],
   },

@@ -4,7 +4,15 @@
   "views": {
     "HelloWorld": "@/views/HelloWorld.af",
     "InfoBar": "@/views/InfoBar.af",
-    "Switch": "@/views/Switch.af"
+    "Switch": "@/views/Switch.af",
+    "TestA":{
+      "src":"@/views/Test.jsx",
+      "name":"A"
+    },
+    "TestB":{
+      "parent":"TestA",
+      "name":"B"
+    }
   },
   "rootId": "app",
   "routes": {

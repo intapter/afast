@@ -23,6 +23,22 @@
     },
     "children": [
       {
+        "name": "TestA"
+      },{
+        "name": "TestB"
+      },
+      {
+        "name":"Switch",
+        "props":{
+          "text":"点我"
+        },
+        "events":{
+          "onClick":{
+            "type":"nav",
+            "value":"/about"
+          }}
+      },
+      {
         "name": "div",
         "text": "${hello} ${name}!"
       },
