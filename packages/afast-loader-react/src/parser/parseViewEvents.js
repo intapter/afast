@@ -8,7 +8,7 @@ const parseViewEvents = (afastObject, view, noParseKeys, imports, innerCode) => 
         noParseKeys.push(key);
         const action = view.events[key];
         const receives = action.receives ? action.receives.join() : ""
-        const valuesStr = action.values
+        const valuesStr = action.values && Array.isArray(action.values)
             ? action.values
                 .map((value) => {
                     if (value === "$e") return value;
@@ -35,13 +35,14 @@ const parseViewEvents = (afastObject, view, noParseKeys, imports, innerCode) => 
                         `View \`${afastObject.name}\` doesn't have an field named \`${action.name}\``
                     );
                 // TODO check weather the type of value is correct
+                const value = parseValue(
+                    action.value,
+                    imports
+                )
                 if (field.reactive) {
-                    view.props[key] = `(${receives}) => ${useStateFnName(action.name)}(${valuesStr})`;
+                    view.props[key] = `(${receives}) => ${useStateFnName(action.name)}(${value})`;
                 } else {
-                    view.props[key] = `(${receives}) => {${action.name} = ${parseValue(
-                        action.value,
-                        imports
-                    )}}`;
+                    view.props[key] = `(${receives}) => {${action.name} = ${value}}`;
                 }
                 break;
             }
