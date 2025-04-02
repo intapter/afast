@@ -19,11 +19,11 @@ const parseFields = (fields, code, fieldList, imports) => {
                 break;
             }
             case "object": {
-                value = parseObject(field.value);
+                value = parseObject(field.value, imports);
                 break;
             }
             case "array": {
-                value = parseValue(field.value);
+                value = parseValue(field.value, imports);
                 break;
             }
             case "ref": {

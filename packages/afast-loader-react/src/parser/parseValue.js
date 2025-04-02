@@ -9,7 +9,7 @@ const parseValue = (value, imports) => {
     if (Array.isArray(value))
         return `[${value
             .map((item) => {
-                return parseValue(item);
+                return parseValue(item, imports);
             })
             .join()}]`;
     if (value instanceof Object) {
