@@ -62,7 +62,8 @@ const parseView = (imports, view, afastObject, innerCode, depth = 0) => {
     const generateElementCode = () => {
         return `React.createElement(${tag}, ${parseObject(
             view.props,
-            noParseKeys
+            noParseKeys,
+            imports
         )}, ${children && children.length > 0
             ? children.join()
             : view.text

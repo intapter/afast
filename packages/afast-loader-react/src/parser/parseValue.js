@@ -1,5 +1,7 @@
 const parseLanguage = require('./parseLanguage')
 const parseValue = (value, imports) => {
+    
+    imports.add(`import {useLanguage} from 'afast-boot'`)
     if (typeof value === "string") {
         if(/\{\{.*\}\}/.test(value)) return value.substring(2,value.length-2)
         if(/\[\[.*\]\]/.test(value))

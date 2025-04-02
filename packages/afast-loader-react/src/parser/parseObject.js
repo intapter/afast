@@ -1,6 +1,6 @@
 const parseValue = require("./parseValue");
 
-const parseObject = (props, noParseKeys) => {
+const parseObject = (props, noParseKeys, imports) => {
     if (!props) return undefined;
     return (
         "{" +
@@ -8,10 +8,10 @@ const parseObject = (props, noParseKeys) => {
             .map((key) => {
                 const value =
                     typeof props[key] === "object"
-                        ? parseObject(props[key])
+                        ? parseObject(props[key], imports)
                         : noParseKeys && noParseKeys.includes(key)
                             ? props[key] // Do not parse this field with function parseValue
-                            : parseValue(props[key]);
+                            : parseValue(props[key], imports);
                 return `${key}: ${value}`;
             })
             .join(",") +
