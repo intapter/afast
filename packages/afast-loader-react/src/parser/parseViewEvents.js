@@ -60,7 +60,23 @@ const parseViewEvents = (afastObject, view, noParseKeys, imports, innerCode) => 
                     innerCode.push(`const navigate = useNavigate()`)
                     imports.add(`import {useNavigate} from 'react-router-dom'`)
                 }
-                view.props[key] = `(${receives}) => {navigate(${parseValue(action.value, imports)})}`
+                let query = ""
+                if (action.query && typeof action.query) {
+                    const queryList = Object.keys(action.query);
+                    if (queryList.length > 0) {
+                        const kvList = []
+                        queryList.forEach((key) => {
+                            const q = action.query[key];
+                            if(Array.isArray(q)){
+                                kvList.push(`${q.map((v) => `${key}=${v}}`).join("&")}`)
+                            }else{
+                                kvList.push(`${key}=${q}`)
+                            }
+                        })
+                        query = `?${kvList.join("&")}`
+                    }
+                }
+                view.props[key] = `(${receives}) => {navigate(${parseValue(action.value, imports)}+\`${query}\`)}`
                 break;
             }
         }

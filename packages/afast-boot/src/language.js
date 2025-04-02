@@ -10,7 +10,6 @@ const useLanguage = (...keys) => {
 }
 
 const registerLanguage = (_src) => {
-    console.log(_src);
     src = _src
 }
 export {

@@ -30,6 +30,13 @@ const parseFields = (fields, code, fieldList, imports) => {
                 value = "React.useRef()";
                 break;
             }
+            case "searchParams": {
+                const setFnName = useStateFnName(name)
+                imports.add(`import {useSearchParams as __AFAST_USE_REACT_SEARCH_PARAMS} from 'react-router-dom'`)
+                code.push(`const [${name},${setFnName}] = __AFAST_USE_REACT_SEARCH_PARAMS()`)
+                fieldList.push(`${name}:{value:${name},setter:${setFnName}}`)
+                return
+            }
             default:
                 "";
         }

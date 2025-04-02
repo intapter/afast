@@ -8,9 +8,15 @@ const parseModule = (afastObject, imports, code) => {
 
     if (!afastObject.view) throw new Error("Parse module view failed, a root `view` is required.")
 
+    
     const fields = [];
     const props = [];
     const fieldList = []
+    const innerCode = []
+    const eventsList = {
+        onMounted: []
+    }
+
     parseFields(afastObject.fields, fields, fieldList, imports);
     if (afastObject.imports) {
         parseImports(afastObject, afastObject.imports, imports);
@@ -32,10 +38,8 @@ const parseModule = (afastObject, imports, code) => {
         props.push("style")
     }
 
-    const innerCode = []
-    const eventsList = {
-        onMounted: []
-    }
+    
+
     if (afastObject.controllers) {
         const contextName = 'AFAST_CONTEXT'
         innerCode.push(`const ${contextName} = React.useRef(null)`)
