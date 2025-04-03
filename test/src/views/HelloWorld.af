@@ -1,5 +1,10 @@
 {
   "type": "module",
+  "slots":{
+    "head":{
+      "name":""
+    }
+  },
   "fields": {
     "hello": {
       "type": "string",
@@ -16,27 +21,30 @@
   },
   "view": {
     "name": "div",
-    "props": {
-      "style": {
-        "padding": "10px"
-      }
+    "style": {
+      "padding": "10px"
     },
     "children": [
       {
+        "name":"head"
+      },
+      {
         "name": "TestA"
-      },{
+      },
+      {
         "name": "TestB"
       },
       {
-        "name":"Switch",
-        "props":{
-          "text":"点我"
+        "name": "Switch",
+        "props": {
+          "text": "点我"
         },
-        "events":{
-          "onClick":{
-            "type":"nav",
-            "value":"/about"
-          }}
+        "events": {
+          "onClick": {
+            "type": "nav",
+            "value": "/about"
+          }
+        }
       },
       {
         "name": "div",
@@ -44,13 +52,11 @@
       },
       {
         "name": "div",
-        "props": {
-          "style": {
-            "display": "flex",
-            "alignItems": "center",
-            "marginTop": 10,
-            "gap": 10
-          }
+        "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "marginTop": 10,
+          "gap": 10
         },
         "children": [
           {

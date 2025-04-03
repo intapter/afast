@@ -8,7 +8,7 @@ const parseObject = (props, noParseKeys, imports) => {
             .map((key) => {
                 const value =
                     typeof props[key] === "object"
-                        ? parseObject(props[key], imports)
+                        ? parseObject(props[key], noParseKeys, imports)
                         : noParseKeys && noParseKeys.includes(key)
                             ? props[key] // Do not parse this field with function parseValue
                             : parseValue(props[key], imports);

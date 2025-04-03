@@ -11,10 +11,8 @@
   },
   "view": {
     "name": "div",
-    "props": {
-      "style": {
-        "padding": 10
-      }
+    "style": {
+      "padding": 10
     },
     "children": [
       {

@@ -13,6 +13,7 @@ const parseModule = (afastObject, imports, code) => {
     const props = [];
     const fieldList = []
     const innerCode = []
+    const slots = []
     const eventsList = {
         onMounted: []
     }
@@ -26,11 +27,18 @@ const parseModule = (afastObject, imports, code) => {
             props.push(key);
         });
     }
+    if (afastObject.slots) {
+        Object.keys(afastObject.slots).forEach((key) => {
+            props.push(key);
+            slots.push(key);
+        });
+    }
     if (afastObject.events) {
         Object.keys(afastObject.events).forEach((key) => {
             props.push(useEventName(key));
         });
     }
+    
     if(!props.className){
         props.push("className")
     }
@@ -52,7 +60,7 @@ const parseModule = (afastObject, imports, code) => {
 
 
     imports.add(`import React from 'react'`);
-    const viewStr = parseView(imports, afastObject.view, afastObject, innerCode)
+    const viewStr = parseView(imports, afastObject.view, afastObject, innerCode, slots)
     code.push(
         `export default function({${props.join()}}){ ${[
             ...fields,

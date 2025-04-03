@@ -5,10 +5,19 @@ const { DEFAULT_FOR_KEY_NAME, DEFAULT_FOR_ITEM_NAME } = require("../constant/com
 const parseViewImport = require("./parseViewImport.js");
 const parseViewEvents = require("./parseViewEvents.js");
 const parseValue = require("./parseValue.js");
+const parseViewClass = require("./parseViewClass.js");
+const parseViewStyle = require("./parseViewStyle.js");
+const parseViewKey = require("./parseViewKey.js");
 
 
 
-const parseView = (imports, view, afastObject, innerCode, depth = 0) => {
+const parseView = (imports, view, afastObject, innerCode, slots, depth = 0) => {
+    if (!view.props) view.props = {}
+
+
+    // Parse events of view
+    const noParseKeys = ["ref"];
+
     const viewsImportMemo = new Map()
     const views = getViews()
     if (!views)
@@ -17,30 +26,58 @@ const parseView = (imports, view, afastObject, innerCode, depth = 0) => {
         );
     let tag;
     // Parse name of view
-    if (HTML_ELE_TAGS.has(view.name)) {
+    if(slots.includes(view.name)){
+        // This view is a slot in
+        tag = view.name
+    } else if (HTML_ELE_TAGS.has(view.name)) {
         // This view is a normal HTML element
         tag = `'${view.name}'`;
     } else {
         // This view is a custom component
         tag = parseViewImport(views, imports, view.name, viewsImportMemo)
     }
+
+
+    // Parse class of view
+    parseViewClass(view)
+    // Parse style of view
+    parseViewStyle(view)
+    // Parse key of view
+    parseViewKey(view)
+
+
     // Parse children of view
     const children = [];
     if (view.children) {
         view.children.forEach((child) => {
-            children.push(parseView(imports, child, afastObject, innerCode, depth + 1));
+            children.push(parseView(imports, child, afastObject, innerCode, slots, depth + 1));
         });
     }
-    // Parse events of view
-    const noParseKeys = ["ref"];
+
+    // Parse slots of view
+    if (view.slots) {
+        Object.keys(view.slots).forEach((name) => {
+            const slot = view.slots[name]
+            const receives = slot.receives ? slot.receives.join() : ""
+            if (slot.children && Array.isArray(slot.children)) {
+                const list = []
+                slot.children.forEach((child) => {
+                    list.push(parseView(imports, child, afastObject, innerCode, slots, depth + 1));
+                })
+                view.props[name] = `({${receives}}) => ([${list.join()}])`
+            } else if (typeof slot === 'object') {
+                view.props[name] = `({${receives}}) => ${parseView(imports, slot, afastObject, innerCode, slots, depth + 1)}`;
+            }
+            noParseKeys.push(name)
+        })
+    }
+
     if (view.events) {
         parseViewEvents(afastObject, view, noParseKeys, imports, innerCode);
     }
 
 
-    if (!view.props) {
-        view.props = {}
-    }
+
 
     // Parse ref of view
     if (view.props.ref) delete view.props.ref
@@ -51,9 +88,9 @@ const parseView = (imports, view, afastObject, innerCode, depth = 0) => {
     // Auto add className and style
     if (depth === 0) {
         imports.add(`import classNames from 'classnames'`)
-        if (!view.props.className){
+        if (!view.props.className) {
             view.props.className = '{{className}}'
-        }else{
+        } else {
             view.props.className = `{{classNames(${parseValue(view.props.className, imports)}, className)}}`
         }
         if (!view.props.style) view.props.style = '{{style}}'
@@ -80,6 +117,10 @@ const parseView = (imports, view, afastObject, innerCode, depth = 0) => {
                     "Field `array` is required when you set a for-command for this view"
                 );
             // TODO check weather the field is exist
+            if (Array.isArray(view.for.array)) {
+                // Receive an array config
+                view.for.array = parseValue(view.for.array, imports)
+            }
             return `${view.for.array}.map((${view.for.item || DEFAULT_FOR_ITEM_NAME
                 },${view.for.key || DEFAULT_FOR_KEY_NAME}) => ${generateElementCode()})`;
         }

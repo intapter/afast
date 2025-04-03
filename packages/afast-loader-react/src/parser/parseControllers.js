@@ -5,7 +5,7 @@ const parseController = (controller, imports, innerCode, context, eventsList) =>
     const name = `__AFAST_CONTROLLER_IMPORT_${id}`;
     imports.add(`import ${name} from '${controller}'`);
     const controllerName = `__AFAST_CONTROLLER_${id}`
-    innerCode.push(`const ${controllerName} = React.useMemo(() => new ${name}(__AFAST_CONTROLLER_PROXY(arguments[0],${context})),[arguments[0]])`)
+    innerCode.push(`const ${controllerName} = React.useMemo(() => new ${name}(__AFAST_CONTROLLER_PROXY(arguments[0],${context})),[])`)
     eventsList.onMounted.push(`if(${controllerName}.onMounted) ${controllerName}.onMounted()`);
     innerCode.push(`__AFAST_CONTROLLERS.push(${controllerName})`)
 };

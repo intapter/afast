@@ -2,7 +2,7 @@ const useStateFnName = require("../hooks/useStateFnName");
 const parseObject = require("./parseObject");
 const parseValue = require("./parseValue");
 
-const parseFields = (fields, code, fieldList, imports) => {
+const parseFields = (fields, code, fieldList, imports, noParseKeys = []) => {
     if (!fields) return;
     Object.keys(fields).forEach((key) => {
         const name = `${key}`;
@@ -19,7 +19,7 @@ const parseFields = (fields, code, fieldList, imports) => {
                 break;
             }
             case "object": {
-                value = parseObject(field.value, imports);
+                value = parseObject(field.value, noParseKeys, imports);
                 break;
             }
             case "array": {
