@@ -2,7 +2,12 @@
   "type": "module",
   "slots":{
     "head":{
-      "name":""
+      "name":"头部"
+    }
+  },
+  "nodes":{
+    "test":{
+      "name":"测试"
     }
   },
   "fields": {
@@ -25,6 +30,9 @@
       "padding": "10px"
     },
     "children": [
+      {
+        "name":"test"
+      },
       {
         "name":"head"
       },

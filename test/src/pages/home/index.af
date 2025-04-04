@@ -60,22 +60,47 @@
       {
         "id": "2",
         "name": "HelloWorld",
-        "slots":{
-          "head":{
-            "name":"div",
-            "text":"asdas",
-            "receives":["name"]
+        "nodes": {
+          "test": [
+            {
+              "for":{
+                "array":[
+                  "1","2","3"
+                ]
+              },
+              "key":"{{item}}",
+              "name": "div",
+              "text": "This is a test node：${item}"
+            },
+            {
+              "name": "div",
+              "text": "This is a test node"
+            }
+          ]
+        },
+        "slots": {
+          "head": {
+            "name": "div",
+            "text": "asdas",
+            "receives": [
+              "name"
+            ]
           },
-          "goo":{
-            "receives":["name"],
-            "children":[
+          "goo": {
+            "receives": [
+              "name"
+            ],
+            "children": [
               {
-                "name":"div",
-                "text":"asdas"
-              },{
-                "name":"div",
-                "text":"asdas",
-                "receives":["name"]
+                "name": "div",
+                "text": "asdas"
+              },
+              {
+                "name": "div",
+                "text": "asdas",
+                "receives": [
+                  "name"
+                ]
               }
             ]
           }

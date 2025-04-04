@@ -14,6 +14,7 @@ const parseModule = (afastObject, imports, code) => {
     const fieldList = []
     const innerCode = []
     const slots = []
+    const nodes = []
     const eventsList = {
         onMounted: []
     }
@@ -31,6 +32,12 @@ const parseModule = (afastObject, imports, code) => {
         Object.keys(afastObject.slots).forEach((key) => {
             props.push(key);
             slots.push(key);
+        });
+    }
+    if (afastObject.nodes) {
+        Object.keys(afastObject.nodes).forEach((key) => {
+            props.push(key);
+            nodes.push(key);
         });
     }
     if (afastObject.events) {
@@ -60,7 +67,7 @@ const parseModule = (afastObject, imports, code) => {
 
 
     imports.add(`import React from 'react'`);
-    const viewStr = parseView(imports, afastObject.view, afastObject, innerCode, slots)
+    const viewStr = parseView(imports, afastObject.view, afastObject, innerCode, slots, nodes)
     code.push(
         `export default function({${props.join()}}){ ${[
             ...fields,
