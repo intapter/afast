@@ -1,5 +1,10 @@
 export default function(props, fields){
     return {
+        dispatch(name, ...args){
+            if(props[name] && typeof props[name] === 'function'){
+                props[name].call(props[name],...args)
+            }
+        },
         props: new Proxy({}, {
             get: (target, prop) => {
                 return Reflect.get(props, prop)
